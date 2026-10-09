@@ -30,6 +30,6 @@ Share the same EXE with someone else; they connect their own accounts. Your acco
 - Automatic tracking contacts the relevant AI provider; app updates come from GitHub. Credentials stay in local login stores. Claude credentials are refreshed there when needed, and the provider may require you to sign in again.
 - This is an independent project. Provider changes may affect tracking. The iPhone view requires the PC to stay online on the same private network.
 
-Created by **Jaeha Lee**. For questions, bugs, or suggestions, use [GitHub Issues](https://github.com/nowsummer/Limit-Tracker/issues). Please leave out passwords and login tokens.
+Created by **Jaeha Lee**. For bugs or suggestions, use [GitHub Issues](https://github.com/nowsummer/Limit-Tracker/issues). For other questions, email [limittracker.app@gmail.com](mailto:limittracker.app@gmail.com). Please leave out passwords and login tokens.
 
 This repository hosts downloads, release notes, and support. Application source code is not published here.
