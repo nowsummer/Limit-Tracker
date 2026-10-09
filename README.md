@@ -6,6 +6,13 @@ See each account's usage percentage directly in the Windows system tray. No clic
 
 ![Limit Tracker main window and popup, with per-account usage icons in an illustrated Windows taskbar. Example accounts.](images/dashboard.png)
 
+<details>
+<summary>View dark theme</summary>
+
+![Limit Tracker in dark mode, with the main window, popup, and usage icons in an illustrated Windows taskbar. Example accounts.](images/dashboard-dark.png)
+
+</details>
+
 ## Features
 
 - Track Claude, Codex, and Gemini CLI usage across multiple accounts.
