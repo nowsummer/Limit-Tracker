@@ -4,7 +4,7 @@ Keep an eye on your AI usage limits from the Windows system tray.
 
 **[Download for Windows](https://github.com/nowsummer/Limit-Tracker/releases/latest)** · [Release notes](https://github.com/nowsummer/Limit-Tracker/releases) · [Report an issue](https://github.com/nowsummer/Limit-Tracker/issues)
 
-![Limit Tracker dashboard in English, showing sample accounts](images/dashboard.png)
+![Limit Tracker dashboard and tray popup in English, showing example accounts](images/dashboard.png)
 
 ## Features
 
