@@ -1,14 +1,15 @@
 # Limit Tracker
 
-Keep an eye on your AI usage limits from the Windows system tray.
+See each account's usage percentage directly in the Windows system tray. No click needed.
 
 **[Download for Windows](https://github.com/nowsummer/Limit-Tracker/releases/latest)** · [Release notes](https://github.com/nowsummer/Limit-Tracker/releases) · [Report an issue](https://github.com/nowsummer/Limit-Tracker/issues)
 
-![Limit Tracker dashboard and tray popup in English, showing example accounts](images/dashboard.png)
+![Limit Tracker main window and popup, with per-account usage icons in an illustrated Windows taskbar. Example accounts.](images/dashboard.png)
 
 ## Features
 
 - Track Claude, Codex, and Gemini CLI usage across multiple accounts.
+- Show a usage number and circular gauge for each selected account in the system tray.
 - See usage percentages and reset times in a compact dashboard and tray popup.
 - Choose which accounts appear in the dashboard or tray, and drag to reorder them.
 - Get usage and reset notifications, with automatic app updates.
