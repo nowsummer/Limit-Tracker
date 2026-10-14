@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Limit Tracker">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f4f5fb">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Limit Tracker</title>
+  <!--APP_MANIFEST-->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/app-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/mobile.css">
+  <script src="/i18n.js" defer></script>
+  <script src="/common.js" defer></script>
+  <script src="/mobile.js" defer></script>
+</head>
+<body class="mobile-body">
+  <main class="mobile-dashboard">
+    <div class="mobile-brand"><img src="/app-icon.png" width="28" height="28" alt=""><span>Limit Tracker</span><span class="mobile-app-badge" id="mobile-app-badge" hidden data-i18n="m.badge">앱</span></div>
+    <header class="mobile-heading"><div><h1 data-i18n="dash.title">사용률</h1><p data-i18n="m.subtitle">0% 미사용 · 100% 한도 소진</p></div><button class="icon-button" id="mobile-refresh" data-i18n-aria-label="m.refresh" data-i18n-title="m.refresh" data-icon="refresh"></button></header>
+    <div class="update-line"><span class="live-dot pending" id="mobile-update-dot"></span><span id="mobile-update-text" role="status" aria-live="polite" data-i18n="m.connecting">PC에 연결하고 있습니다</span></div>
+    <div class="mobile-network-message" id="mobile-network-message" role="status" hidden></div>
+    <section class="mobile-provider-grid" id="mobile-providers" data-i18n-aria-label="m.aria"></section>
+    <p class="mobile-explanation" data-i18n="m.explanation">표시할 계정과 순서는 PC 프로그램의 설정 → ‘내 AI 계정’에서 정합니다.</p>
+
+    <details class="widget-install app-install" id="app-install">
+      <summary><span class="widget-summary-icon" data-icon="phone" aria-hidden="true"></span><span><strong data-i18n="m.installTitle">iPhone 앱으로 추가</strong><small data-i18n="m.installSub">홈 화면에서 바로 열어보세요.</small></span><span class="widget-chevron" data-icon="chevron" aria-hidden="true"></span></summary>
+      <div class="widget-instructions">
+        <ol class="mobile-steps">
+          <li><span class="step-number">1</span><div><strong data-i18n="m.installStep1">이 화면을 Safari에서 열기</strong><p data-i18n="m.installStep1Note">PC에서 복사한 개인 연결 주소로 접속하세요.</p></div></li>
+          <li><span class="step-number">2</span><div><strong data-i18n="m.installStep2">공유 → 홈 화면에 추가</strong><p data-i18n="m.installStep2Note">Safari의 페이지 메뉴에서 공유를 누르세요. 메뉴 아래에 ‘홈 화면에 추가’가 있습니다.</p></div></li>
+          <li><span class="step-number">3</span><div><strong data-i18n="m.installStep3">‘웹 앱으로 열기’를 켜고 추가</strong><p data-i18n="m.installStep3Note">홈 화면의 Limit Tracker 아이콘을 누르면 전용 앱 화면으로 열립니다.</p></div></li>
+        </ol>
+        <p class="widget-limit-note" data-i18n="m.installNote">PC와 같은 Wi-Fi에서 사용합니다. PC와 Limit Tracker가 켜져 있어야 하며, 연결이 끊긴 상태에서는 새로 열 수 없습니다. 한도 초기화 알림은 Windows에서 받습니다.</p>
+      </div>
+    </details>
+
+    <details class="widget-install" id="widget-install">
+      <summary><span class="widget-summary-icon" data-icon="phone" aria-hidden="true"></span><span><strong data-i18n="m.widgetTitle">홈 화면에 위젯 추가</strong><small data-i18n="m.widgetSub">Scriptable로 최근 사용량을 확인하세요.</small></span><span class="widget-chevron" data-icon="chevron" aria-hidden="true"></span></summary>
+      <div class="widget-instructions">
+        <ol class="mobile-steps">
+          <li><span class="step-number">1</span><div><strong data-i18n="m.widgetStep1">Scriptable 앱 설치</strong><p data-i18n="m.widgetStep1Note">아래 버튼으로 App Store에서 설치하세요.</p><a class="secondary-button" href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noreferrer"><span data-i18n="m.widgetInstall">Scriptable 설치</span> <span data-icon="external" aria-hidden="true"></span></a></div></li>
+          <li><span class="step-number">2</span><div><strong data-i18n="m.widgetStep2">이 PC에 연결하는 위젯 코드 복사</strong><p data-i18n="m.widgetStep2Note">아래 버튼으로 코드를 복사합니다. 이 코드에는 개인 연결 주소가 들어 있습니다.</p><button class="primary-button" id="copy-widget-button" disabled><span data-i18n="m.widgetCopy">위젯 코드 복사</span> <span data-icon="copy" aria-hidden="true"></span></button><p class="widget-code-status" id="widget-code-status" role="status" data-i18n="m.widgetPreparing">코드를 준비하고 있습니다.</p><textarea id="widget-code" class="widget-code" data-i18n-aria-label="m.widgetCodeAria" readonly spellcheck="false" hidden></textarea><a class="text-button widget-download" id="widget-download" download="Limit Tracker.js"><span data-i18n="m.widgetDownload">파일로 내려받기</span> <span data-icon="download" aria-hidden="true"></span></a></div></li>
+          <li><span class="step-number">3</span><div><strong data-i18n="m.widgetStep3">Scriptable에서 새 스크립트 만들기</strong><p data-i18n="m.widgetStep3Note">오른쪽 위 +를 누르고 코드를 붙여넣은 뒤, 이름을 ‘Limit Tracker’로 저장하세요. 한 번 실행해 연결을 확인합니다.</p></div></li>
+          <li><span class="step-number">4</span><div><strong data-i18n="m.widgetStep4">홈 화면에서 Scriptable 위젯 추가</strong><p data-i18n="m.widgetStep4Note">중간 크기를 선택하고 위젯 편집에서 Script를 ‘Limit Tracker’로 지정하세요.</p></div></li>
+        </ol>
+        <p class="widget-limit-note" data-i18n="m.widgetNote">PC와 iPhone은 같은 Wi-Fi에 있어야 하며, PC와 Limit Tracker가 켜져 있어야 합니다. 위젯 갱신 시점은 iOS가 결정합니다. PC 연결이 끊기면 마지막 확인 시각이 함께 표시됩니다.</p>
+      </div>
+    </details>
+    <footer class="mobile-page-footer"><span data-i18n="m.footer1">사용한 비율을 표시합니다. 0%는 미사용, 100%는 한도 소진입니다.</span><br><span data-i18n="m.footer2">각 AI 회사가 공개하지 않는 토큰 수는 추정하지 않습니다.</span></footer>
+  </main>
+</body>
+</html>

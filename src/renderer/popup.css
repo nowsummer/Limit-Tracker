@@ -1,0 +1,46 @@
+.popup-body { overflow: hidden; }
+.popup-shell { height: 100vh; padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 8px; }
+.popup-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; flex-shrink: 0; }
+.popup-heading h1 { font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
+.popup-heading p { font-size: 12px; color: var(--muted); margin: 2px 0 0; }
+.popup-providers { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto; padding: 1px 1px 2px; }
+.popup-provider { background: var(--surface-solid); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; flex-shrink: 0; --provider-color: var(--muted); --provider-ring: #7a859e; --provider-soft: var(--soft); }
+.popup-provider.claude { --provider-color: var(--claude); --provider-ring: var(--claude-ring); --provider-soft: var(--claude-soft); }
+.popup-provider.codex { --provider-color: var(--codex); --provider-ring: var(--codex-ring); --provider-soft: var(--codex-soft); }
+.popup-provider.gemini { --provider-color: #446bc5; --provider-ring: #6485d4; --provider-soft: #eef2fc; }
+.popup-provider-heading { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.popup-provider-heading .provider-logo { width: 28px; height: 28px; border-radius: 8px; margin: 0; }
+.popup-provider-heading .provider-logo svg { width: 20px; height: 20px; }
+.popup-provider-heading h2 { font-size: 14px; font-weight: 700; line-height: 1.3; margin: 0; }
+.popup-provider-heading .provider-status { margin: 0 -6px 0 auto; font-size: 12px; padding: 2px 6px; }
+.popup-provider-heading .popup-identity { flex: 1 1 auto; min-width: 80px; }
+.popup-provider-heading .after-limit { margin-left: auto; flex-shrink: 0; max-width: 62%; }
+.popup-identity { min-width: 0; }
+.popup-account-label { font-size: 12px; color: var(--text); font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 167px; line-height: 1.35; }
+.popup-meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 5px; }
+.popup-meters .usage-window-header { margin-bottom: 4px; }
+.popup-meters .usage-window-value { font-size: 18px; line-height: 1.2; }
+.popup-meters .usage-meter { height: 5px; }
+.popup-meters .reset-block { margin-top: 5px; font-size: 12px; }
+.popup-meters .reset-block .icon { display: none; }
+.popup-extra { margin-left: auto; font-size: 12px; color: var(--muted); line-height: 1.3; }
+.popup-extra summary { cursor: pointer; width: fit-content; border-radius: 3px; }
+.popup-additional .extra-panel { display: none; grid-column: 1 / -1; grid-row: 2; margin-top: 2px; padding-top: 9px; gap: 10px; }
+.popup-additional .popup-extra[open] + .extra-panel { display: flex; }
+.popup-empty { margin: 8px 0 1px; font-size: 12px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.popup-footer { margin-top: auto; flex-shrink: 0; border-top: 1px solid var(--line); padding-top: 6px; }
+.popup-open { width: 100%; min-height: 36px; display: flex; align-items: center; justify-content: flex-start; gap: 9px; padding: 7px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font-size: 13px; font-weight: 600; }
+.popup-open:hover { background: var(--hover-fill); }
+.popup-open:active:not(:disabled) { background: var(--press-fill); }
+.popup-open-mark .icon { width: 18px; height: 18px; }
+.popup-empty-state { padding: 30px 16px; color: var(--muted); text-align: center; }
+
+/* Fable under the weekly column; "more limits" under the current one. */
+.popup-additional { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; row-gap: 5px; align-items: baseline; margin-top: 5px; }
+.popup-additional .fable-limits { grid-column: 2; grid-row: 1; }
+.popup-additional .popup-extra { grid-column: 1; grid-row: 1; margin-left: 0; }
+
+/* More than three accounts: the list scrolls; a soft fade marks the hidden rest. */
+.popup-providers.has-more { scrollbar-gutter: stable; }
+.popup-providers.has-more:not(.at-end) { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent); }
+.popup-open > span:last-child { white-space: nowrap; }

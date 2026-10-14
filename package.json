@@ -1,0 +1,78 @@
+{
+  "name": "limit-tracker",
+  "private": true,
+  "version": "1.6.0",
+  "description": "Per-account AI usage limits in the Windows system tray",
+  "main": "src/main.cjs",
+  "engines": { "node": ">=22.12.0" },
+  "author": "Jaeha Lee <limittracker.app@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "check": "node scripts/check.cjs",
+    "build": "electron-builder --win dir --publish never",
+    "dist": "electron-builder --win --publish never",
+    "release": "node scripts/release.cjs",
+    "rollback": "node scripts/rollback.cjs"
+  },
+  "build": {
+    "appId": "local.limittracker.desktop",
+    "productName": "Limit Tracker",
+    "copyright": "Copyright © 2026 Jaeha Lee",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "docs/licenses/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Limit Tracker",
+      "deleteAppDataOnUninstall": false,
+      "differentialPackage": true,
+      "artifactName": "Limit-Tracker-${version}.${ext}",
+      "include": "build/installer.nsh"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "nowsummer",
+        "repo": "Limit-Tracker",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.10"
+  },
+  "homepage": "https://github.com/nowsummer/Limit-Tracker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nowsummer/Limit-Tracker.git"
+  }
+}

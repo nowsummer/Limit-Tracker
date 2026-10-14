@@ -1,0 +1,11 @@
+Third-party components in Limit Tracker
+
+- Pretendard font: SIL Open Font License 1.1 (src/renderer/fonts/OFL.txt).
+- Service logos: trademarks of their owners, not covered by the MIT License;
+  see assets/brands/NOTICE.md (Lobe Icons parts: MIT, assets/brands/LOBE-LICENSE.txt).
+- Electron and the npm packages listed in package-lock.json: each under its own
+  license. The installed app also carries Electron's LICENSE.electron.txt and
+  LICENSES.chromium.html.
+
+Limit Tracker itself is under the MIT License (see LICENSE in the source
+repository).

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Limit Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="popup.css">
+  <script src="i18n.js" defer></script>
+  <script src="common.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+<body class="popup-body">
+  <main class="popup-shell">
+    <div class="popup-heading"><div><h1 data-i18n="popup.title" data-i18n-title="popup.footer">사용률</h1><p id="popup-updated" role="status" data-i18n="popup.checkingAccounts">계정을 확인하고 있습니다</p></div><button class="toolbar-button" id="popup-refresh" type="button" data-i18n-aria-label="popup.refresh" data-i18n-title="popup.refreshShort" data-icon="refresh"></button></div>
+    <section class="popup-providers" id="popup-providers" data-i18n-aria-label="popup.aria"></section>
+    <div class="popup-footer"><button class="popup-open" id="popup-open" type="button"><span class="popup-open-mark" data-icon="app" aria-hidden="true"></span><span data-i18n="popup.open">Limit Tracker 열기</span></button></div>
+  </main>
+</body>
+</html>

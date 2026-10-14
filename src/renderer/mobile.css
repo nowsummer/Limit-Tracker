@@ -1,0 +1,77 @@
+.mobile-body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", "Malgun Gothic", sans-serif; font-size: 14px; font-weight: 500; -webkit-text-size-adjust: 100%; }
+.mobile-dashboard { width: min(100%, 820px); margin: 0 auto; padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.mobile-brand { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+.mobile-brand img { border-radius: 7px; }
+.mobile-app-badge { margin-left: auto; font-size: 12px; color: var(--muted); }
+.mobile-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.mobile-heading h1 { font-size: 25px; letter-spacing: -.04em; line-height: 1.2; }
+.mobile-heading p { margin: 4px 0 0; color: var(--muted); font-size: 12px; font-weight: 500; }
+.mobile-heading .icon-button { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; }
+.mobile-dashboard .update-line { margin-top: 13px; margin-bottom: 12px; font-size: 12px; font-weight: 500; min-height: 18px; }
+.mobile-provider-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.mobile-provider { min-width: 0; padding: 14px; background: var(--surface-solid); border: 1px solid var(--line); border-radius: 16px; --provider-color: var(--claude); --provider-ring: var(--claude-ring); --provider-soft: var(--claude-soft); }
+.mobile-provider.codex { --provider-color: var(--codex); --provider-ring: var(--codex-ring); --provider-soft: var(--codex-soft); }
+.mobile-provider.gemini { --provider-color: #3e68c9; --provider-ring: #5c83dc; --provider-soft: #edf2fc; }
+.mobile-provider.grok, .mobile-provider.custom { --provider-color: var(--text); --provider-ring: var(--muted); --provider-soft: var(--soft); }
+.mobile-provider .provider-heading { align-items: center; gap: 9px; flex-wrap: wrap; row-gap: 2px; }
+.mobile-provider .provider-heading .after-limit { margin-left: auto; flex: 0 1 auto; max-width: 100%; }
+.mobile-provider .provider-logo { width: 33px; height: 33px; border-radius: 10px; margin-top: 0; }
+.mobile-provider.codex .provider-logo, .mobile-provider.grok .provider-logo { color: var(--text); background: var(--soft); }
+.mobile-provider .provider-identity { flex: 1 1 0; min-width: 96px; }
+.mobile-provider .provider-name { font-size: 16px; font-weight: 650; line-height: 1.25; letter-spacing: -.02em; }
+.mobile-account-label { font-size: 12px; font-weight: 600; color: var(--text); margin-top: 2px; line-height: 1.35; overflow-wrap: anywhere; }
+.mobile-provider .provider-status { font-size: 12px; font-weight: 600; padding: 2px 6px; margin: 0 -6px 0 auto; flex-shrink: 0; }
+.mobile-overview-windows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 12px; }
+.mobile-empty-info { margin-top: 12px; }
+.mobile-primary-label { font-weight: 600; font-size: 14px; line-height: 1.5; }
+.mobile-provider .usage-window-header { font-size: 12px; margin-bottom: 5px; align-items: baseline; gap: 8px; }
+.mobile-provider .usage-window-label { min-width: 0; font-weight: 600; }
+.mobile-provider .usage-window-value { font-size: 22px; font-weight: 700; }
+.mobile-provider .usage-meter { height: 6px; }
+.mobile-provider .usage-window .reset-block { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; margin-top: 6px; font-size: 12px; line-height: 1.45; column-gap: 4px; }
+.mobile-provider .usage-window .reset-block .icon { display: none; }
+.mobile-provider .usage-window .reset-countdown { font-weight: 500; white-space: normal; word-break: keep-all; overflow-wrap: normal; overflow: visible; text-overflow: clip; }
+.mobile-provider .usage-window .reset-exact { display: none; }
+.mobile-extra-windows { margin-top: 8px; color: var(--muted); font-size: 12px; font-weight: 500; }
+.mobile-extra-windows summary { cursor: pointer; width: fit-content; min-height: 44px; display: list-item; align-content: center; }
+.mobile-extra-windows .usage-windows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 3px; padding-top: 9px; gap: 12px 16px; }
+.mobile-provider .provider-error { font-size: 12px; line-height: 1.5; margin-top: 8px; padding: 8px 10px; }
+.mobile-provider .error-last-seen { font-size: 12px; }
+.mobile-fable { margin-top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+.mobile-fable .fable-limits { grid-column: 2; }
+.mobile-fable.no-meters .fable-limits { grid-column: 1 / -1; }
+.mobile-empty { color: var(--muted); font-size: 14px; line-height: 1.65; margin: 6px 0 0; overflow-wrap: anywhere; }
+.mobile-empty-state { padding: 24px; background: var(--surface-solid); border-radius: 22px; border: 1px solid var(--glass-edge); }
+.mobile-empty-state h2 { margin: 0; font-size: 18px; }
+.mobile-empty-state p { margin-bottom: 0; color: var(--muted); line-height: 1.6; }
+.mobile-explanation { color: var(--muted); font-size: 12px; font-weight: 500; line-height: 1.5; margin: 12px 2px 16px; }
+.mobile-network-message { color: var(--warning); background: var(--warning-soft); border-radius: 13px; padding: 13px 15px; font-size: 14px; margin-bottom: 16px; line-height: 1.65; }
+.widget-install { border: 1px solid var(--glass-edge); border-radius: 18px; background: var(--surface-solid); margin-top: 12px; }
+.widget-install summary { list-style: none; display: flex; align-items: center; padding: 17px; gap: 11px; cursor: pointer; min-height: 76px; }
+.widget-install summary:active { background: var(--soft); border-radius: 18px; }
+.widget-install summary::-webkit-details-marker { display: none; }
+.widget-summary-icon { color: var(--accent); flex-shrink: 0; }
+.widget-summary-icon .icon { width: 23px; height: 23px; }
+.widget-install summary strong { font-size: 15px; font-weight: 600; display: block; line-height: 1.5; }
+.widget-install summary small { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.widget-chevron { margin-left: auto; color: var(--muted); transition: transform 140ms; flex-shrink: 0; }
+.widget-chevron .icon { width: 16px; height: 16px; }
+.widget-install[open] .widget-chevron { transform: rotate(90deg); }
+.widget-instructions { padding: 0 18px 18px; }
+.widget-instructions .mobile-steps { margin-top: 12px; gap: 22px; }
+.widget-instructions .mobile-steps p { font-size: 14px; line-height: 1.65; }
+.widget-instructions .secondary-button, .widget-instructions .primary-button { margin-top: 9px; padding: 11px 13px; min-height: 44px; text-decoration: none; font-size: 14px; }
+.widget-instructions .mobile-steps strong { font-size: 14px; line-height: 1.5; }
+.widget-instructions .step-number { font-size: 12px; width: 25px; height: 25px; }
+.widget-code-status { color: var(--accent) !important; font-size: 13px !important; }
+.widget-code { font: 12px/1.5 ui-monospace, Consolas, monospace; width: 100%; resize: vertical; min-height: 130px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); color: var(--text); margin-top: 8px; }
+.widget-download { text-decoration: none; margin-top: 8px; font-size: 13px; min-height: 44px; }
+.widget-limit-note { font-size: 13px; color: var(--muted); background: var(--soft); border-radius: 12px; padding: 13px; line-height: 1.65; margin: 18px 0 0; }
+.mobile-page-footer { color: var(--muted); text-align: center; font-size: 12px; line-height: 1.7; margin-top: 23px; }
+@media (min-width: 700px) { .mobile-provider-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+@media (max-width: 360px) { .mobile-dashboard { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); } .mobile-provider { padding: 12px; } .mobile-overview-windows { gap: 12px; } .mobile-provider .usage-window-value { font-size: 20px; } }
+@media (prefers-color-scheme: dark) { .mobile-provider.gemini { --provider-color: #a0bbff; --provider-ring: #89a9f7; --provider-soft: #303d59; } }
+@media (prefers-reduced-motion: reduce) { .widget-chevron { transition: none; } }
+
+/* Korean wraps between words. */
+.mobile-explanation, .mobile-empty, .provider-error p { word-break: keep-all; overflow-wrap: anywhere; text-wrap: pretty; }

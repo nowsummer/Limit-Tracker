@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Limit Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="i18n.js" defer></script>
+  <script src="common.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="titlebar">
+    <div class="app-mark" aria-hidden="true" data-icon="app"></div>
+    <span class="titlebar-name">Limit Tracker</span>
+    <div class="window-controls">
+      <button class="window-control pin-control" id="pin-button" title="항상 위에 표시" aria-label="항상 위에 표시" aria-pressed="false" data-icon="pin"></button>
+      <button class="window-control" id="minimize-button" data-i18n-title="title.minimize" data-i18n-aria-label="title.minimize" data-icon="minimize"></button>
+      <button class="window-control close-control" id="close-button" data-i18n-title="title.close" data-i18n-aria-label="title.close" data-icon="close"></button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="dashboard-heading" aria-labelledby="dashboard-title">
+      <div>
+        <h1 id="dashboard-title" data-i18n="dash.title">사용률</h1>
+        <p class="heading-description" data-i18n="dash.description">한도 대비 사용률과 초기화 시간</p>
+      </div>
+      <div class="header-actions">
+        <button class="toolbar-button" id="refresh-button" type="button" data-i18n-title="dash.refreshTitle" data-i18n-aria-label="dash.refresh" data-icon="refresh"></button>
+        <button class="toolbar-button" id="settings-button" type="button" data-i18n-title="dash.settingsTitle" data-i18n-aria-label="dash.settings" data-icon="settings"></button>
+      </div>
+    </section>
+
+    <div class="dashboard-status">
+    <div class="update-line" role="status" aria-live="polite">
+      <span class="live-dot" id="update-dot"></span>
+      <span id="update-text" data-i18n="dash.connecting">계정 연결을 확인하고 있습니다</span>
+      <span class="auto-refresh-label" id="interval-text"></span>
+    </div>
+
+    <div class="account-toolbar"><span id="account-count" data-i18n="dash.myAccounts">내 계정</span><button class="text-button" id="add-account-button"><span data-icon="plus" aria-hidden="true"></span><span data-i18n="dash.addAccount">계정 추가</span></button></div>
+    </div>
+    <section class="provider-grid" id="providers" data-i18n-aria-label="dash.providersAria"></section>
+
+    <footer class="dashboard-footer">
+      <span class="tray-hint"><span data-i18n="dash.trayHint">창을 닫아도 트레이에서 확인할 수 있어요.</span></span>
+      <div class="footer-actions"><button class="text-button" id="mobile-button"><span data-icon="phone" aria-hidden="true"></span><span data-i18n="dash.iphone">iPhone에서 보기</span></button><button class="text-button help-button" id="help-button"><span data-icon="info" aria-hidden="true"></span><span data-i18n="dash.help">사용량 안내</span></button></div>
+    </footer>
+  </main>
+
+  <dialog class="sheet settings-sheet" id="settings-dialog" aria-labelledby="settings-title">
+    <div class="sheet-heading"><div><h2 id="settings-title" tabindex="-1" data-i18n="settings.title">설정</h2></div><button class="icon-button dialog-close" data-i18n-aria-label="settings.close" data-icon="close"></button></div>
+    <div class="sheet-content">
+      <div class="setting-group-title"><h3 class="setting-group-heading" data-i18n="settings.accounts">내 AI 계정</h3><button class="text-button" id="settings-add-account"><span data-icon="plus" aria-hidden="true"></span><span data-i18n="settings.add">추가</span></button></div>
+      <div class="account-list-header" id="account-list-header" aria-hidden="true"><span data-i18n="row.screen">화면</span><span data-i18n="row.tray">트레이</span></div>
+      <div id="account-list" class="account-list"></div>
+      <p class="setting-footnote login-period" id="login-period-note" hidden><span data-i18n="settings.loginPeriod">Claude는 약 4주마다 다시 로그인해야 합니다.</span><span id="login-period-tip"></span></p>
+      <h3 class="setting-group-heading" data-i18n="settings.usage">사용량 확인</h3>
+      <label class="setting-row" for="refresh-setting"><span><strong data-i18n="settings.refresh">자동 새로고침</strong><small data-i18n="settings.refreshNote">프로그램이 켜져 있는 동안 갱신합니다.</small></span><select id="refresh-setting" name="refreshSeconds"><option value="60" data-i18n="settings.every1">1분마다</option><option value="120" data-i18n="settings.every2">2분마다</option><option value="300" data-i18n="settings.every5">5분마다</option></select></label>
+      <label class="setting-row" for="notifications-setting"><span><strong data-i18n="settings.notifications">사용량 알림</strong><small data-i18n="settings.notificationsNote">사용 한도가 부족해지면 알려드립니다.</small></span><input type="checkbox" class="switch" id="notifications-setting" name="notifications"></label>
+      <label class="setting-row" for="reset-notifications-setting"><span><strong data-i18n="settings.resetNotifications">초기화 알림</strong><small data-i18n="settings.resetNotificationsNote">사용 한도가 초기화되면 알려 드립니다.</small></span><input type="checkbox" class="switch" id="reset-notifications-setting" name="resetNotifications"></label>
+      <div class="setting-row"><span><strong data-i18n="settings.testNotification">알림 수신 확인</strong><small data-i18n="settings.testNotificationNote">알림이 실제로 오는지 바로 확인합니다.</small></span><button class="secondary-button" id="test-notification" type="button" data-i18n="settings.testButton">알림 테스트</button></div>
+      <h3 class="setting-group-heading" data-i18n="settings.tray">트레이</h3>
+      <label class="setting-row" for="tray-mode-setting"><span><strong data-i18n="settings.trayIcon">트레이 아이콘</strong><small data-i18n="settings.trayIconNote">위에서 트레이를 켠 계정마다 현재 사용률을 표시합니다.</small></span><select id="tray-mode-setting" name="trayMode"><option value="usage" data-i18n="settings.trayUsage">숫자 사용률</option><option value="app" data-i18n="settings.trayApp">앱 아이콘</option></select></label>
+      <p class="setting-note" id="tray-selection-note" role="status" hidden data-i18n="settings.trayNone">트레이로 선택한 계정이 없어 앱 아이콘을 표시합니다.</p>
+      <h3 class="setting-group-heading" data-i18n="settings.windows">일반</h3>
+      <label class="setting-row" for="launch-setting"><span><strong data-i18n="settings.launch">Windows 시작 시 실행</strong><small data-i18n="settings.launchNote">로그인하면 자동으로 확인할 수 있습니다.</small></span><input type="checkbox" class="switch" id="launch-setting" name="launchAtLogin"></label>
+      <label class="setting-row" for="hidden-setting"><span><strong data-i18n="settings.hidden">트레이에서 시작</strong><small data-i18n="settings.hiddenNote">실행할 때 프로그램 창을 띄우지 않습니다.</small></span><input type="checkbox" class="switch" id="hidden-setting" name="startHidden"></label>
+      <label class="setting-row" for="pin-setting"><span><strong data-i18n="settings.pin">항상 위에 표시</strong><small data-i18n="settings.pinNote">다른 창 위에 사용량을 보여줍니다.</small></span><input type="checkbox" class="switch" id="pin-setting" name="alwaysOnTop"></label>
+      <label class="setting-row" for="theme-setting"><span><strong data-i18n="settings.theme">화면 테마</strong></span><select id="theme-setting" name="theme"><option value="system" data-i18n="settings.themeSystem">Windows 설정</option><option value="light" data-i18n="settings.themeLight">라이트</option><option value="dark" data-i18n="settings.themeDark">다크</option></select></label>
+      <label class="setting-row" for="language-setting"><span><strong data-i18n="settings.language">언어</strong><small data-i18n="settings.languageNote">프로그램 화면, 트레이, 알림과 iPhone 페이지에 적용됩니다.</small></span><select id="language-setting" name="language"><option value="system" data-i18n="settings.languageSystem">Windows 설정</option><option value="ko">한국어</option><option value="en">English</option></select></label>
+      <h3 class="setting-group-heading" data-i18n="settings.about">정보</h3>
+      <div class="about-card">
+        <div class="about-identity"><div class="app-mark about-mark" aria-hidden="true" data-icon="app"></div><div><strong>Limit Tracker</strong><small id="about-version"></small></div></div>
+        <p class="about-contact-note" data-i18n="settings.aboutSummary">Claude·Codex·Gemini 등 AI 계정의 사용률과 초기화 시간을 한곳에서 확인하는 Windows 트레이 프로그램입니다.</p>
+        <dl class="about-facts">
+          <div><dt data-i18n="settings.aboutAuthor">제작자</dt><dd>Jaeha Lee</dd></div>
+          <div><dt data-i18n="settings.aboutContact">문의</dt><dd><button class="link-button" id="contact-button" type="button" data-external="contact">limittracker.app@gmail.com</button></dd></div>
+        </dl>
+      </div>
+      <label class="setting-row" for="auto-update-setting" id="auto-update-row"><span><strong data-i18n="settings.autoUpdate">새 버전 자동 확인</strong><small id="auto-update-note" data-i18n="settings.autoUpdateNote">새 버전을 확인해 미리 내려받아 둡니다. 설치는 ‘지금 다시 시작해 적용’을 누를 때만 합니다.</small></span><input type="checkbox" class="switch" id="auto-update-setting" name="autoUpdate"></label>
+      <div class="setting-row update-row"><span><strong data-i18n="settings.updatesTitle">업데이트</strong><small id="update-status" role="status" aria-live="polite" data-i18n="update.idle">아직 확인하지 않았습니다.</small></span><div class="update-actions"><button class="secondary-button" id="update-install-button" type="button" hidden data-i18n="settings.installUpdate">지금 다시 시작해 적용</button><button class="secondary-button" id="update-download-button" type="button" hidden data-i18n="settings.downloadUpdate">내려받기</button><button class="secondary-button" id="update-open-button" type="button" hidden data-i18n="settings.openDownload">다운로드 페이지 열기</button><button class="secondary-button" id="update-check-button" type="button" data-i18n="settings.checkUpdates">업데이트 확인</button></div></div>
+      <p class="setting-note about-links"><button class="text-button" type="button" data-external="releases"><span data-icon="external" aria-hidden="true"></span><span data-i18n="settings.releaseNotes">버전 기록</span></button></p>
+    </div>
+    <div class="sheet-footer"><span id="settings-save-status" role="status" data-i18n="settings.autoSave">변경 내용은 자동으로 저장됩니다.</span><span id="app-version"></span></div>
+  </dialog>
+
+  <dialog class="sheet account-sheet" id="account-dialog" aria-labelledby="account-title">
+    <form id="account-form" novalidate>
+      <div class="sheet-heading"><div><h2 id="account-title" tabindex="-1" data-i18n="account.add">계정 추가</h2><p data-i18n="account.subtitle">확인하고 싶은 AI와 계정을 선택하세요.</p></div><button type="button" class="icon-button dialog-close" data-i18n-aria-label="account.close" data-icon="close"></button></div>
+      <div class="sheet-content">
+        <label class="field-label" for="account-provider" data-i18n="account.service">AI 서비스</label><select class="field-input" id="account-provider" required></select>
+        <p class="field-note" id="provider-description"></p>
+        <label class="field-label" for="account-label" data-i18n="account.label">계정 이름</label><input class="field-input" id="account-label" maxlength="40" required data-i18n-placeholder="account.labelPlaceholder" autocomplete="off">
+        <label class="field-label" for="account-mode" data-i18n="account.mode">연결 방법</label><select class="field-input" id="account-mode"></select>
+        <p class="field-note" id="mode-description"></p>
+        <label class="setting-row" for="account-visible"><span><strong data-i18n="account.visible">화면에 표시</strong><small data-i18n="account.visibleNote">메인 화면과 iPhone에 표시합니다.</small></span><input type="checkbox" class="switch" id="account-visible" checked></label>
+        <label class="setting-row" for="account-tray-visible"><span><strong data-i18n="account.trayVisible">트레이에 표시</strong><small data-i18n="account.trayVisibleNote">숫자 트레이 아이콘과 빠른 확인 팝업에 표시합니다.</small></span><input type="checkbox" class="switch" id="account-tray-visible" checked></label>
+        <div class="setting-row account-login-row" id="account-login-row" hidden><span><strong data-i18n="account.login">로그인</strong><small id="account-login-note"></small></span><span class="account-login-actions"><span id="account-login-tip"></span><button class="secondary-button" id="account-relogin" type="button" data-i18n="row.relogin">다시 로그인</button></span></div>
+        <label class="setting-row" id="account-fable-row" for="account-show-fable"><span><strong data-i18n="account.fable">Fable 한도 표시</strong><small data-i18n="account.fableNote">이 Claude 계정의 Fable 사용률을 함께 표시합니다.</small></span><input type="checkbox" class="switch" id="account-show-fable"></label>
+        <label class="setting-row" id="account-tray-metric-row" for="account-tray-metric" hidden><span><strong data-i18n="account.trayMetric">트레이 숫자 기준</strong><small data-i18n="account.trayMetricNote">트레이 아이콘의 숫자와 호에 쓸 한도입니다.</small></span><select id="account-tray-metric"><option value="primary" data-i18n="account.trayMetricPrimary">현재 한도 (5시간)</option><option value="fable" data-i18n="account.trayMetricFable">Fable 주간</option></select></label>
+        <section id="manual-fields" hidden aria-labelledby="manual-title">
+          <div class="setting-group-title"><h3 class="setting-group-heading" id="manual-title" data-i18n="account.manualTitle">직접 기록한 사용량</h3><button class="text-button" type="button" id="add-manual-window"><span data-icon="plus" aria-hidden="true"></span><span data-i18n="account.addWindow">한도 추가</span></button></div>
+          <p class="field-note" data-i18n="account.manualNote">서비스 화면에서 확인한 사용률(%)을 입력하세요. 자동 갱신되지 않으며, 초기화 시간이 지나면 다시 입력해야 합니다.</p>
+          <div id="manual-window-list"></div>
+        </section>
+        <p class="form-error" id="account-error" role="alert" hidden></p>
+      </div>
+      <div class="account-form-footer"><button class="text-button danger-button" id="delete-account" type="button" hidden data-i18n="account.delete">계정 삭제</button><button class="secondary-button dialog-close" type="button" data-i18n="account.cancel">취소</button><button class="primary-button" id="save-account" type="submit" data-i18n="account.create">계정 추가</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet mobile-sheet" id="mobile-dialog" aria-labelledby="mobile-title">
+    <div class="sheet-heading"><div><h2 id="mobile-title" tabindex="-1" data-i18n="mobile.title">iPhone에서 보기</h2><p data-i18n="mobile.subtitle">같은 Wi-Fi에서 사용량을 확인하세요.</p></div><button class="icon-button dialog-close" data-i18n-aria-label="mobile.close" data-icon="close"></button></div>
+    <div class="sheet-content">
+      <label class="setting-row mobile-enable" for="mobile-setting"><span><strong data-i18n="mobile.enable">iPhone 연결 켜기</strong><small data-i18n="mobile.enableNote">이 PC의 사용량을 읽기 전용으로 공유합니다.</small></span><input type="checkbox" class="switch" id="mobile-setting" name="mobileEnabled"></label>
+      <div class="mobile-connection" id="mobile-connection" hidden>
+        <p class="connection-label" data-i18n="mobile.addressLabel">iPhone Safari에서 열 주소</p>
+        <div class="url-field"><input id="mobile-url" readonly data-i18n-aria-label="mobile.addressAria" spellcheck="false"><button class="icon-button" id="copy-mobile-button" data-i18n-aria-label="mobile.copy" data-i18n-title="mobile.copy" data-icon="copy"></button></div>
+        <p class="connection-note" id="mobile-private-note" data-i18n="mobile.private">개인 연결 주소입니다. 다른 사람에게 공유하지 마세요.</p>
+        <p class="mobile-warning" id="mobile-status" role="status"></p>
+      </div>
+      <ol class="mobile-steps">
+        <li><span class="step-number">1</span><div><strong data-i18n="mobile.step1">PC와 iPhone을 같은 Wi-Fi에 연결</strong><p data-i18n="mobile.step1Note">같은 공유기라면 PC는 유선이어도 됩니다. 이 PC와 Limit Tracker가 켜져 있어야 합니다.</p></div></li>
+        <li><span class="step-number">2</span><div><strong data-i18n="mobile.step2">iPhone 홈 화면에 앱 추가</strong><p data-i18n="mobile.step2Note">Safari에서 주소를 열고 공유 → ‘홈 화면에 추가’ → ‘웹 앱으로 열기’를 선택하세요.</p></div></li>
+        <li><span class="step-number">3</span><div><strong data-i18n="mobile.step3">위젯은 Scriptable로 추가</strong><p data-i18n="mobile.step3Note">iPhone 페이지의 ‘위젯 설치’를 누르고 안내를 따라주세요. iOS가 갱신 시점을 정하므로 위젯에는 최근 기록이 표시됩니다.</p></div></li>
+      </ol>
+      <button class="secondary-button scriptable-button" data-external="scriptable"><span data-i18n="mobile.scriptable">Scriptable 알아보기</span> <span data-icon="external" aria-hidden="true"></span></button>
+    </div>
+  </dialog>
+
+  <dialog class="sheet help-sheet" id="help-dialog" aria-labelledby="help-title">
+    <div class="sheet-heading"><div><h2 id="help-title" tabindex="-1" data-i18n="help.title">사용량 안내</h2></div><button class="icon-button dialog-close" data-i18n-aria-label="help.close" data-icon="close"></button></div>
+    <div class="sheet-content help-content">
+      <p><strong data-i18n="help.p1Strong">계정의 한도 중 이미 사용한 비율입니다.</strong><br><span data-i18n="help.p1">0%는 아직 사용하지 않은 상태이고, 100%는 해당 한도를 모두 사용한 상태입니다. 정확한 남은 토큰 수는 Anthropic·OpenAI·Google 등 각 AI 회사가 공개하지 않습니다.</span></p>
+      <p data-i18n="help.p2">현재 한도와 주간 한도를 나란히 보여줍니다. Fable은 계정 편집에서 켤 수 있습니다. 특정 모델이나 기능에만 적용되는 한도는 ‘모델별 한도’ 또는 ‘다른 한도’를 펼치면 볼 수 있습니다.</p>
+      <p><strong data-i18n="help.limitsStrong">Claude와 Codex 한도</strong><br><span data-i18n="help.limits"></span></p>
+      <p><strong data-i18n="help.claudeMethodStrong">Claude 자동 조회에 대해</strong><br><span data-i18n="help.claudeMethod"></span></p>
+      <p><strong data-i18n="help.afterLimitStrong">사용량 재설정과 크레딧</strong><br><span data-i18n="help.afterLimit"></span></p>
+      <p><strong data-i18n="help.loginStrong">Claude 로그인 기한</strong><br><span class="line-group" data-i18n-lines="login.periodNote"></span></p>
+      <p><strong data-i18n="help.notifyStrong">알림이 오지 않으면</strong><br><span data-i18n="help.notify"></span></p>
+      <p data-i18n="help.p3">초기화 시간은 서비스가 알려 준 시간입니다. 그 시간이 지나면 새로고침한 결과로 확인합니다.</p>
+      <p data-i18n="help.p4">연결이나 조회에 실패하면 숫자를 추정하지 않습니다. 이전 기록이 남아 있다면 확인한 시각과 함께 표시합니다.</p>
+      <p data-i18n="help.p5">Gemini는 Google 약관 때문에 자동 조회하지 않고 ‘직접 입력’만 지원합니다. Grok 등 자동 조회를 지원하지 않는 서비스도 ‘직접 입력’으로 명확히 구분합니다.</p>
+      <div class="account-actions help-links"><button class="secondary-button" type="button" data-external="claude-usage" data-help-provider="claude"><span data-i18n="help.claudePage">Claude 사용량 페이지</span> <span data-icon="external" aria-hidden="true"></span></button><button class="secondary-button" type="button" data-external="codex-usage" data-help-provider="codex"><span data-i18n="help.codexPage">Codex 사용량 페이지</span> <span data-icon="external" aria-hidden="true"></span></button><button class="secondary-button" type="button" data-external="gemini-usage" data-help-provider="gemini" hidden><span data-i18n="help.geminiPage">Gemini 사용량 안내</span> <span data-icon="external" aria-hidden="true"></span></button></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" popover="manual" hidden></div>
+</body>
+</html>
