@@ -255,7 +255,7 @@ summary.low .extra-peak { color: var(--danger); }
 .account-display-option { display: grid; justify-items: center; gap: 6px; min-width: 44px; color: var(--muted); font-size: 12px; cursor: pointer; }
 .row-switch-label { display: none; }
 .account-list-header { display: flex; justify-content: flex-end; gap: 12px; margin: 2px 0 -6px; position: relative; z-index: 1; }
-.account-list-header span { width: 44px; text-align: center; font-size: 12px; font-weight: 600; color: var(--muted); }
+.account-list-header span { width: 44px; display: flex; justify-content: center; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--muted); }
 .account-edit { color: var(--accent); font-size: 13px; font-weight: 600; min-height: 30px; }
 .account-edit:hover { color: var(--text); }
 .account-login { color: var(--accent); font-weight: 600; }

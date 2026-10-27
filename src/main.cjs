@@ -194,9 +194,10 @@ function fitMain(win, height) {
     const home = Number.isFinite(win.limitHomeY) ? win.limitHomeY : bounds.y;
     const y = Math.max(area.y, Math.min(home, area.y + area.height - h));
     win.limitHomeY = y < home ? home : null;
-    // Only the height (and, near the screen bottom, the top edge) changes; passing the
-    // width back would let DPI rounding creep it by a pixel or two each time.
-    if (h !== bounds.height || y !== bounds.y) { const keep = win.limitHomeY; win.setBounds(y !== bounds.y ? { y, height: h } : { height: h }); win.limitHomeY = keep; }
+    // Only the height (and, near the screen bottom, the top edge) changes. The width is the
+    // one the user chose, passed explicitly: left out, Electron fills in the measured width,
+    // which DPI rounding at 125% or 150% grows by a pixel on every fit.
+    if (h !== bounds.height || y !== bounds.y) { const keep = win.limitHomeY; win.setBounds(y !== bounds.y ? { y, width: mainWidth, height: h } : { width: mainWidth, height: h }); win.limitHomeY = keep; }
   }
   win.limitSized = true;
   if (win.limitReady && !win.isVisible() && win.limitRevealTimer) revealMain(win);
