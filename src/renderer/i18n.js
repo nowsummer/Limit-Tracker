@@ -309,6 +309,7 @@
     'popup.checkingAccounts': ['계정을 확인하고 있습니다', 'Checking accounts'],
     'popup.refresh': ['지금 새로고침', 'Refresh now'],
     'popup.refreshShort': ['새로고침', 'Refresh'],
+    'popup.close': ['닫기', 'Close'],
     'popup.aria': ['AI별 사용량', 'Usage by AI'],
     'popup.open': ["Limit Tracker 열기", "Open Limit Tracker"],
     'popup.footer': ['한도 대비 사용률 · 100%에서 한도 소진', 'Usage against limits · 100% means used up'],

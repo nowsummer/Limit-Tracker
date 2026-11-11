@@ -39,12 +39,12 @@
     if (!ui.showsStatus || ui.showsStatus(provider)) heading.append(ui.statusBadge(provider));
     else { const after = ui.afterLimitLine?.(provider); if (after) heading.append(after); }
     card.append(heading);
-    const { primary, weekly, extra, fable } = ui.overviewWindows(provider);
+    const { primary, extra, fable, meters: shown } = ui.overviewWindows(provider);
     card.classList.toggle('no-usage', !primary && !fable.length);
     if (primary || fable.length) {
       if (primary) {
         const meters = ui.el('div', 'mobile-overview-windows');
-        meters.append(ui.windowMeter(primary, primary.label || t('card.currentLimit'), provider), ui.windowMeter(weekly, weekly?.label || t('card.weeklyLimit'), provider));
+        meters.append(...shown.map((window, index) => ui.windowMeter(window, window?.label || t(index ? 'card.weeklyLimit' : 'card.currentLimit'), provider)));
         card.append(meters);
       }
       if (fable.length) {

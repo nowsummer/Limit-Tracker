@@ -8,14 +8,19 @@ function used(window, now = Date.now()) {
 const isFableLabel = w => /fable/i.test(`${w?.id || ''}${w?.label || ''}`);
 // Fable is a Claude limit; a manual account may call its own limit anything.
 const claudeFable = (p, w) => (p?.providerId || p?.id) === 'claude' && isFableLabel(w);
-function primaryWindow(p) { const windows = (p.windows || []).filter(w => !claudeFable(p, w)); return windows.find(w => w.durationMinutes > 0 && w.durationMinutes <= 1440) || windows[0] || null; }
+// Without a 5-hour limit (e.g. Claude Ultra) the overall weekly limit leads, whatever order the rows arrive in.
+const GENERAL_WEEKLY = /^(secondary|weekly|seven_day|7d|seven-day)$/i;
+function primaryWindow(p) { const windows = (p.windows || []).filter(w => !claudeFable(p, w)); return windows.find(w => w.durationMinutes > 0 && w.durationMinutes <= 1440) || windows.find(w => GENERAL_WEEKLY.test(w.id || '')) || windows[0] || null; }
 function fableWindow(p) { return (p.windows || []).find(w => claudeFable(p, w)) || null; }
 /** The window the tray icon shows: Fable when the account asks for it and has one. */
 function trayWindow(p) {
   if (p?.trayMetric === 'fable' && p.showFable) { const fable = fableWindow(p); if (fable) return fable; }
   return primaryWindow(p);
 }
-function weeklyWindow(p, primary) { return (p.windows || []).find(w => w !== primary && !claudeFable(p, w) && !/sonnet|opus|oauth/i.test(w.id + w.label) && (w.durationMinutes >= 10000 || /week|주간|7일/i.test(w.id + w.label))); }
+function weeklyWindow(p, primary) {
+  // Without a 5-hour limit the overall weekly limit is the primary itself; no other row is "weekly".
+  if (GENERAL_WEEKLY.test(primary?.id || '')) return undefined;
+  return (p.windows || []).find(w => w !== primary && !claudeFable(p, w) && !/sonnet|opus|oauth/i.test(w.id + w.label) && (w.durationMinutes >= 10000 || /week|주간|7일/i.test(w.id + w.label))); }
 function shortName(p) { return [...(({ claude: 'Claude', codex: 'Codex', gemini: 'Gemini', grok: 'Grok' })[p.providerId || p.id] || p.name || 'AI')].slice(0, 12).join(''); }
 function accountName(p, maxLength = 10) { const fallback = t('pres.default'); const name = (p.accountLabel || fallback).replace(/\s*계정$/, '').trim() || fallback; return [...name].slice(0, maxLength).join(''); }
 function formatUsed(w, now) { const value = used(w, now); return value === null ? '—' : `${Math.round(value)}%`; }

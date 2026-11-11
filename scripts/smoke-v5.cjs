@@ -99,7 +99,9 @@ app.whenReady().then(async () => {
   await js(main, "document.getElementById('pin-button').click()");
   await waitFor(async () => (await snapshot(main)).settings.alwaysOnTop === true);
   await waitFor(async () => await js(main, "document.getElementById('pin-button').getAttribute('aria-pressed')") === 'true');
-  await delay(250);
+  // Wait for the 160 ms tilt animation itself: a fixed pause failed when Chromium paused animations
+  // of a covered window (2026-11-10, 1 of 3 runs).
+  await waitFor(async () => await js(main, "getComputedStyle(document.querySelector('#pin-button svg')).transform") === 'none', 2000, 'the pin stands upright');
   const pinOn = await js(main, "(() => { const b = document.getElementById('pin-button'); return { pressed: b.getAttribute('aria-pressed'), fill: getComputedStyle(b.querySelector('.pin-head')).fill, transform: getComputedStyle(b.querySelector('svg')).transform, title: b.title }; })()");
   assert.equal(pinOff.pressed, 'false'); assert.equal(pinOff.fill, 'none'); assert.notEqual(pinOff.transform, 'none');
   assert.equal(pinOn.pressed, 'true'); assert.notEqual(pinOn.fill, 'none'); assert.equal(pinOn.transform, 'none');

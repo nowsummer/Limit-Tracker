@@ -48,10 +48,14 @@
       try { node.showPopover(); } catch { /* Already visible. */ }
     }
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      if (typeof node.hidePopover === 'function') { try { node.hidePopover(); } catch { /* Already dismissed. */ } }
-      node.hidden = true;
-    }, Math.min(15000, Math.max(6500, String(message).length * 90)));
+    toastTimer = setTimeout(hideToast, Math.min(15000, Math.max(6500, String(message).length * 90)));
+  }
+  function hideToast() {
+    clearTimeout(toastTimer);
+    const node = document.getElementById('toast');
+    if (!node || node.hidden) return;
+    if (typeof node.hidePopover === 'function') { try { node.hidePopover(); } catch { /* Already dismissed. */ } }
+    node.hidden = true;
   }
 
   async function openExternal(destination, accountId, button) {
@@ -160,6 +164,7 @@
       // Everything built from strings is rebuilt in the new language.
       cardsSignature = ''; accountsSignature = '';
       if (document.getElementById('account-dialog').open) refreshAccountDialogText();
+      hideToast(); // a message shown a moment ago is in the old language
     }
     expiration = ui.expirySignature(state.providers);
     const providers = ui.visibleProviders(state);

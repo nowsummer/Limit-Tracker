@@ -6,7 +6,8 @@
   const locale = () => (i18n ? i18n.t('locale') : 'ko-KR');
   const icons = {
     app: '<rect x=".75" y=".75" width="22.5" height="22.5" rx="5.625" fill="#176cde" stroke="none"/><rect x="6" y="11.625" width="4.5" height="7.5" rx="2.25" fill="#cadfff" stroke="none"/><rect x="13.5" y="5.25" width="4.5" height="13.875" rx="2.25" fill="#fafdff" stroke="none"/>',
-    refresh: '<path d="M19.5 12a7.5 7.5 0 1 1-7.5-7.5h1.5"/><path d="m11 1.5 3 3-3 3"/>',
+    // A 320° clockwise circle whose end turns into the arrowhead (Apple arrow.clockwise style), 2026-11-11.
+    refresh: '<path d="M19.05 9.43A7.5 7.5 0 1 1 15.75 5.5"/><path d="M15.09 2.75 16.18 5.75 13.03 6.31"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     edit: '<path d="m15 4 5 5M4 20l5-1L20 8a2.1 2.1 0 0 0-5-5L4 14Z"/>',
     accounts: '<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/>',
@@ -161,23 +162,41 @@
   // Fable is a Claude limit; other services may name their own limit anything, including "Fable".
   function isProviderFable(provider, window) { return (provider?.providerId || provider?.id) === 'claude' && isFableWindow(window); }
 
+  const GENERAL_WEEKLY = /^(secondary|weekly|seven_day|7d|seven-day)$/i;
+  function isShortWindow(window) { return window?.durationMinutes > 0 && window.durationMinutes <= 1440; }
   function primaryWindow(provider) {
     const windows = (Array.isArray(provider.windows) ? provider.windows : []).filter(window => !isProviderFable(provider, window));
-    return windows.find(window => window.durationMinutes > 0 && window.durationMinutes <= 1440)
+    return windows.find(isShortWindow)
       || windows.find(window => /^(primary|session|five_hour|5h|five-hour)$/i.test(window.id || ''))
+      // No 5-hour limit (e.g. Claude Ultra): the overall weekly limit leads, whatever order the rows arrive in.
+      || windows.find(window => GENERAL_WEEKLY.test(window.id || ''))
       || windows[0]
       || null;
   }
 
+  /**
+   * The windows a card shows. `meters` is the row of bars: normally the 5-hour and weekly
+   * limits, with null standing for a weekly limit the service did not report. An account
+   * without a 5-hour limit leads with its overall weekly limit and puts its next weekly limit
+   * (Fable when shown, else the first model limit) beside it, never an empty weekly slot.
+   */
   function overviewWindows(provider) {
     const primary = primaryWindow(provider);
     const rest = (provider.windows || []).filter(window => window !== primary && !isProviderFable(provider, window));
-    const weekly = rest.find(window => /^(secondary|weekly|seven_day|7d|seven-day)$/i.test(window.id || ''))
-      || rest.find(window => window.durationMinutes >= 10080 && !/sonnet|opus|model/i.test(window.id || ''))
-      || rest.find(window => /주간|weekly|7.day/i.test(window.label || '') && !/sonnet|opus|model/i.test(window.id || ''));
     const fable = (provider.providerId || provider.id) === 'claude' && provider.showFable === true
       ? (provider.windows || []).filter(isFableWindow) : [];
-    return { primary, weekly: weekly || null, extra: rest.filter(window => window !== weekly), fable };
+    const fiveHour = isShortWindow(primary) || /^(primary|session|five_hour|5h|five-hour)$/i.test(primary?.id || '');
+    // Manual records (ids manual-N, no duration) keep the layout they always had.
+    const manual = provider.manual || provider.mode === 'manual';
+    if (primary && !fiveHour && !manual) {
+      const next = fable[0] || rest[0] || null;
+      return { primary, weekly: next, extra: rest.filter(window => window !== next), fable: fable.filter(window => window !== next), meters: next ? [primary, next] : [primary] };
+    }
+    const weekly = rest.find(window => GENERAL_WEEKLY.test(window.id || ''))
+      || rest.find(window => window.durationMinutes >= 10080 && !/sonnet|opus|model/i.test(window.id || ''))
+      || rest.find(window => /주간|weekly|7.day/i.test(window.label || '') && !/sonnet|opus|model/i.test(window.id || ''))
+      || null;
+    return { primary, weekly, extra: rest.filter(window => window !== weekly), fable, meters: primary ? [primary, weekly] : [] };
   }
 
   function windowSummary(window, provider) {
@@ -442,7 +461,7 @@
   function renderProvider(provider, handlers = {}) {
     const name = providerName(provider);
     const kind = provider.providerId || provider.id;
-    const { primary, weekly, extra, fable } = overviewWindows(provider);
+    const { primary, extra, fable, meters: shown } = overviewWindows(provider);
     const checking = !primary && (provider.refreshing || provider.status === 'loading');
     const manual = provider.manual || provider.mode === 'manual';
     const card = el('article', `provider-card ${kind}${!primary && !fable.length ? ' no-usage' : ''}`);
@@ -462,7 +481,7 @@
 
     if (primary) {
       const meters = el('div', 'overview-windows');
-      meters.append(windowMeter(primary, primary.label || t('card.currentLimit'), provider), windowMeter(weekly, weekly?.label || t('card.weeklyLimit'), provider));
+      meters.append(...shown.map((window, index) => windowMeter(window, window?.label || t(index ? 'card.weeklyLimit' : 'card.currentLimit'), provider)));
       card.append(meters);
     } else if (!fable.length) {
       const empty = el('div', 'empty-message');

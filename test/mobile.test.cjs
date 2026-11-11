@@ -358,3 +358,22 @@ test('the iPhone home screen icon is an opaque 180 px square (iOS rounds it; tra
   const alpha = (x, y) => raw[y * (180 * 4 + 1) + 1 + x * 4 + 3];
   for (const [x, y] of [[0, 0], [179, 0], [0, 179], [179, 179], [90, 90]]) assert.equal(alpha(x, y), 255, `pixel ${x},${y} is opaque`);
 });
+
+test('widget leads with the overall weekly limit when there is no 5-hour limit, as the tray does', async () => {
+  const { parseWindows } = require('../src/providers/claude.cjs');
+  const { publicSnapshot } = require('../src/mobile-server.cjs');
+  const soon = days => new Date(Date.now() + days * 86400000).toISOString();
+  // Claude Ultra: weekly rows only, a model row first (the server's order is kept).
+  const rows = [
+    { kind: 'weekly_scoped', percent: 92, resets_at: soon(2), scope: { model: { display_name: 'Opus' } } },
+    { kind: 'weekly_all', percent: 30, resets_at: soon(5) },
+    { kind: 'weekly_scoped', percent: 11, resets_at: soon(5), scope: { model: { display_name: 'Fable' } } },
+  ];
+  for (const showFable of [true, false]) {
+    const state = publicSnapshot({ providers: [{ id: 'work', providerId: 'claude', name: 'Claude', accountLabel: '회사 계정', status: 'ok', showFable, windows: parseWindows({ limits: rows }) }], settings: { accounts: [{ id: 'work', visible: true }] } });
+    const labels = await renderWidget(state.providers);
+    const headline = labels.find(label => /^\d+%$/.test(label));
+    assert.equal(headline, '30%', `headline with showFable=${showFable}`);
+    if (showFable) assert.ok(labels.some(label => /Fable/.test(label) && /11%/.test(label)), 'Fable weekly is the second line');
+  }
+});

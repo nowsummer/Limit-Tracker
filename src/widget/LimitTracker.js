@@ -104,10 +104,16 @@ function used(window) {
   const remaining = percent(window.remainingPercent);
   return remaining === null ? null : 100 - remaining;
 }
+const isClaudeFable = (p, w) => (p.providerId || p.id) === 'claude' && /fable/i.test(`${w.id || ''}${w.label || ''}`);
+const GENERAL_WEEKLY = /^(secondary|weekly|seven_day|7d|seven-day)$/i;
+// The same order as the PC tray: 5-hour limit, else the overall weekly limit (accounts without a
+// 5-hour limit, e.g. Claude Ultra), whatever order the rows arrive in. Fable leads only if alone.
 function primaryWindow(p) {
-  const windows = Array.isArray(p.windows) ? p.windows : [];
+  const all = Array.isArray(p.windows) ? p.windows : [];
+  const windows = all.some(w => !isClaudeFable(p, w)) ? all.filter(w => !isClaudeFable(p, w)) : all;
   return windows.find(w => w.durationMinutes > 0 && w.durationMinutes <= 1440)
-    || windows.find(w => /^(primary|session|five_hour|5h|five-hour)$/i.test(w.id || '')) || windows[0] || null;
+    || windows.find(w => /^(primary|session|five_hour|5h|five-hour)$/i.test(w.id || ''))
+    || windows.find(w => GENERAL_WEEKLY.test(w.id || '')) || windows[0] || null;
 }
 function color(p, value) {
   if (value === null) return muted;
@@ -162,7 +168,9 @@ if (unauthorized) {
     reading.addSpacer(3);
     addLabel(reading, status, Font.systemFont(10));
     if (family === 'medium') {
-      const secondary = (p.windows || []).find(window => window !== w);
+      // The weekly limit next to a 5-hour one; otherwise Fable (when shown), then the next limit.
+      const others = (p.windows || []).filter(window => window !== w);
+      const secondary = others.find(window => GENERAL_WEEKLY.test(window.id || '')) || others.find(window => isClaudeFable(p, window)) || others[0];
       if (secondary) { reading.addSpacer(4); const secondaryUsed = used(secondary); addLabel(reading, `${secondary.label} ${secondaryUsed !== null ? Math.round(secondaryUsed) + '% ' + T.used : T.refresh}`, Font.systemFont(10)); }
     }
   }

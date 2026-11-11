@@ -30,11 +30,11 @@
     else { const after = ui.afterLimitLine(provider); if (after) heading.append(after); }
     heading.title = ui.statusDetails(provider).join(' · ');
     card.append(heading);
-    const { primary, weekly, extra, fable } = ui.overviewWindows(provider);
+    const { primary, extra, fable, meters: shown } = ui.overviewWindows(provider);
     if (primary || fable.length) {
       if (primary) {
         const meters = ui.el('div', 'popup-meters');
-        meters.append(ui.windowMeter(primary, primary.label || t('card.currentLimit'), provider), ui.windowMeter(weekly, weekly?.label || t('card.weeklyLimit'), provider));
+        meters.append(...shown.map((window, index) => ui.windowMeter(window, window?.label || t(index ? 'card.weeklyLimit' : 'card.currentLimit'), provider)));
         card.append(meters);
       }
       if (fable.length || extra.length) {
@@ -138,6 +138,8 @@
     finally { manualRefreshing = false; render(state); }
   });
   document.getElementById('popup-open').addEventListener('click', () => bridge?.windowAction('show-main'));
+  // A flyout closes by clicking elsewhere, but only once Windows has given it focus; × always works.
+  document.getElementById('popup-close').addEventListener('click', () => bridge?.windowAction('close'));
   // Like any flyout, Esc closes it.
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && !event.defaultPrevented) bridge?.windowAction('close'); });
   document.getElementById('popup-providers').addEventListener('scroll', updateScrollHint, { passive: true });
